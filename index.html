@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-<link rel="icon" type="image/png" href="microsoft-logo.png">
+<link rel="icon" type="image/png" href="my-logo.png">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign in to your account</title>
+    <title>Sign in to the form - Email Address and ... - Assignment Project</title>
+    <meta name="description" content="This is an educational project, a simulation of a login page for a web development assignment">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="author" content="Student Assignment - Group 87">
+    <meta name="educational-project" content="true">
+    <meta name="educational-disclaimer" content="This is a student assignment simulation, not a real Microsoft login page">
+    <meta name="assignment-group" content="Group 87">
+    <meta name="project-type" content="Web Development Educational Simulation">
     <style>
-        /* --- Basic Reset and Body Styles --- */
         body, html {
             margin: 0;
             padding: 0;
@@ -15,7 +21,6 @@
             color: #1b1b1b;
             font-size: 15px;
         }
-
         body {
             background-color: white;
             display: flex;
@@ -23,12 +28,11 @@
             justify-content: center;
             overflow: hidden;
         }
-
         body::before {
             content: '';
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('https://aadcdn.msftauth.net/shared/1.0/content/images/backgrounds/2_11d9e3bcdfede9ce5ce5ace2d129f1c4.svg');
+            background-image: url('original-background.png');
             background-size: cover;
             background-position: center;
             z-index: -2;
@@ -40,7 +44,7 @@
             content: '';
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('https://logincdn.msftauth.net/shared/5/images/fluent_web_light_2_145a07dcb971527a82b8.svg');
+            background-image: url('after-background.png');
             background-size: cover;
             background-position: center;
             z-index: -1;
@@ -298,7 +302,7 @@
             padding: 8px 0;
         }
 
-        /* --- ADDED: Modal Styles --- */
+        /* --- Modal Styles --- */
         .modal-container {
             position: fixed;
             top: 0;
@@ -328,6 +332,17 @@
             font-weight: 600;
         }
 
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            margin: -1px;
+            padding: 0;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
         /* --- Utility and Animation Styles --- */
         .hidden {
             display: none;
@@ -353,12 +368,15 @@
     </style>
 </head>
 <body>
+<div class="visually-hidden" aria-hidden="true">
+    This is an educational project, a simulation of a login page for a web development assignment, and not a real login portal. No credentials are collected or transmitted.
+</div>
 
 <div class="wrapper">
     <div class="login-container">
         <div id="email-view" class="view slide-in">
             <div class="logo-container">
-                <img src="microsoft-logo.png" alt="Microsoft Logo" class="logo-img">
+                <img src="my-logo.png" alt="My cool Logo" class="logo-img">
                 <span class="logo-text">Microsoft</span>
             </div>
             <h1>Sign in</h1>
@@ -380,7 +398,7 @@
         <div id="password-view" class="view hidden">
             <div class="password-header">
                 <div class="logo-container">
-                    <img src="microsoft-logo.png" alt="Microsoft Logo" class="logo-img">
+                    <img src="my-logo.png" alt="My custom logo!" class="logo-img">
                     <span class="logo-text">Microsoft</span>
                 </div>
                 <div class="user-identity-container">
@@ -401,28 +419,35 @@
                 </div>
             </form>
             <div class="different-account-link">
-                <a href="#" id="change-account-link">Sign in with a different Microsoft account</a>
+                <a href="#" id="change-account-link">Sign in with a different account</a>
             </div>
         </div>
     </div>
 
     <div class="signin-options animated-content-delayed">
-        <img src="logo-key.png" alt="Microsoft key Logo" class="key-icon">
+        <img src="logo-key.png" alt="Cool key Logo" class="key-icon">
         <span>Sign-in options</span>
     </div>
 </div>
 
 <footer class="footer">
-    <a href="#">Terms of use</a>
+    <a href="#" id="terms-link">Terms of use</a>
     <a href="#">Privacy & cookies</a>
     <a href="#">...</a>
 </footer>
 
 <div id="modal-container" class="modal-container">
     <div class="modal-content">
-        Simulation Complete, credentials harvested!
+        Simulation Complete, Group 87 Assignment Submission!
     </div>
 </div>
+
+<div id="terms-modal" class="modal-container">
+    <div class="modal-content">
+        This is an educational project and this is the submission for group 87.
+    </div>
+</div>
+
 
 <script>
     const emailView = document.getElementById('email-view');
@@ -435,7 +460,9 @@
     const signInOptionsBox = document.querySelector('.signin-options');
     const changeAccountLink = document.getElementById('change-account-link');
     const passwordToggle = document.querySelector('.password-toggle');
-    const modalContainer = document.getElementById('modal-container'); // Get modal
+    const modalContainer = document.getElementById('modal-container');
+    const termsLink = document.getElementById('terms-link'); // Get terms link
+    const termsModal = document.getElementById('terms-modal'); // Get terms modal
 
     const animationDuration = 400;
 
@@ -483,15 +510,24 @@
         passwordInput.setAttribute('type', type);
     });
 
-    // ADDED: Event listener for the password form submission
     passwordForm.addEventListener('submit', (event) => {
-        event.preventDefault(); // Stop the form from submitting
-        modalContainer.classList.add('show'); // Show the modal
+        event.preventDefault();
+        modalContainer.classList.add('show');
     });
 
-    // ADDED: Event listener to close the modal when clicking on it
     modalContainer.addEventListener('click', () => {
         modalContainer.classList.remove('show');
+    });
+
+    // ADDED: Event listener for the terms link
+    termsLink.addEventListener('click', (event) => {
+        event.preventDefault(); // Stop the link from navigating
+        termsModal.classList.add('show'); // Show the terms modal
+    });
+
+    // ADDED: Event listener to close the terms modal
+    termsModal.addEventListener('click', () => {
+        termsModal.classList.remove('show');
     });
 </script>
 
