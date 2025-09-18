@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="icon" type="image/png" href="microsoft-logo.png">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in to your account</title>
+    <style>
+        /* --- Basic Reset and Body Styles --- */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+            color: #1b1b1b;
+            font-size: 15px;
+        }
+
+        body {
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('https://aadcdn.msftauth.net/shared/1.0/content/images/backgrounds/2_11d9e3bcdfede9ce5ce5ace2d129f1c4.svg');
+            background-size: cover;
+            background-position: center;
+            z-index: -2;
+            opacity: 0;
+            animation: fadeInBackground 0.1s ease-in 0.2s forwards;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('https://logincdn.msftauth.net/shared/5/images/fluent_web_light_2_145a07dcb971527a82b8.svg');
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        body.password-view-active::after {
+            opacity: 1;
+        }
+
+        /* --- Main Content Wrapper --- */
+        .wrapper {
+            width: 440px;
+            margin-top: -25px
+        }
+
+        /* --- Main Login Container --- */
+        .login-container {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 44px 44px 44px 44px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            box-sizing: border-box;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .view {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* --- Logo Styles --- */
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 12px;
+        }
+
+        .logo-img {
+            width: 25px;
+            height: 25px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 600;
+            color: #605d5d;
+            padding-top: 2px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0 0 18px 0;
+            color: #1b1b1b;
+        }
+
+        /* --- Form Elements --- */
+        .form-group {
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        input[type="email"], input[type="password"], input[type="text"] {
+            width: 100%;
+            padding: 6px 0;
+            border: none;
+            border-bottom: 1px solid #666;
+            font-size: 15px;
+            color: #666;
+            font-weight: normal;
+            outline: none;
+            box-sizing: border-box;
+            background-color: transparent;
+            font-weight: 0;
+            transition: border-color 0.2s;
+        }
+
+        input[type="email"]:focus, input[type="password"]:focus, input[type="text"]:focus {
+            border-bottom: 2px solid #0067b8;
+        }
+
+        input::placeholder {
+            font-weight: 300;
+            color: #888;
+            font-size: 14px;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            opacity: 0.6;
+        }
+
+        /* --- Links --- */
+        .links {
+            font-size: 13px;
+            margin-bottom: 28px;
+        }
+
+        .links p {
+            margin: 0 0 8px 0;
+        }
+
+        .links p:first-child {
+            margin-bottom: 18px;
+        }
+
+        .links a {
+            color: #0067b8;
+            text-decoration: none;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+            color: #1b1b1b;
+        }
+
+        /* --- Buttons --- */
+        .button-container {
+            text-align: right;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .btn {
+            border: none;
+            padding: 8px 28px;
+            font-size: 15px;
+            font-weight: 0;
+            cursor: pointer;
+            min-width: 108px;
+            min-height: 32px;
+            transition: background-color 0.2s;
+        }
+
+        .back-button {
+            background-color: #ccc;
+            color: #1b1b1b;
+        }
+        .back-button:hover {
+            background-color: #b2b2b2;
+        }
+
+        .next-button {
+            background-color: #0067b8;
+            color: white;
+        }
+
+        .next-button:hover {
+            background-color: #005da6;
+        }
+
+        .different-account-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .different-account-link a {
+            color: #0067b8;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+        }
+        .different-account-link a:hover {
+            text-decoration: underline;
+            color: #1b1b1b;
+        }
+
+        /* --- Sign-in Options --- */
+        .signin-options {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 12px 44px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            box-sizing: border-box;
+        }
+
+        .signin-options:hover {
+            background-color: #f2f2f2;
+        }
+
+        .key-icon {
+            width: 22px;
+            height: 22px;
+        }
+
+        .signin-options span {
+            font-weight: 0;
+        }
+
+        /* --- Footer --- */
+        .footer {
+            position: fixed;
+            bottom: 12px;
+            right: 24px;
+            font-size: 13px;
+        }
+
+        .footer a {
+            color: #1b1b1b;
+            text-decoration: none;
+            margin-left: 16px;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- Password View Specific Styles --- */
+        #password-view .logo-container {
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+        .password-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .user-identity-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 16px 0 25px 0;
+        }
+
+        #user-email-display {
+            font-size: 15px;
+            background-color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid #e0e0e0;
+            display: inline-block;
+            font-weight: 600;
+        }
+
+        #password-view .button-container {
+            justify-content: flex-start;
+            margin-top: 30px;
+        }
+        #password-view .btn.next-button {
+            width: 100%;
+            text-align: center;
+            padding: 8px 0;
+        }
+
+        /* --- ADDED: Modal Styles --- */
+        .modal-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal-container.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* --- Utility and Animation Styles --- */
+        .hidden {
+            display: none;
+        }
+        @keyframes fadeInBackground {
+            from { opacity: 0; } to { opacity: 1; }
+        }
+        @keyframes slideInFromRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOutToLeft {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(-100%); opacity: 0; }
+        }
+        .slide-in { animation: slideInFromRight 0.4s ease-out forwards; }
+        .slide-out { animation: slideOutToLeft 0.4s ease-out forwards; }
+        .animated-content-delayed {
+            opacity: 0;
+            animation: slideInFromRight 0.4s ease-out forwards;
+            animation-delay: 0.2s;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="login-container">
+        <div id="email-view" class="view slide-in">
+            <div class="logo-container">
+                <img src="microsoft-logo.png" alt="Microsoft Logo" class="logo-img">
+                <span class="logo-text">Microsoft</span>
+            </div>
+            <h1>Sign in</h1>
+            <form id="email-form" method="POST">
+                <div class="form-group">
+                    <input type="email" id="email" name="email" placeholder="Email, phone, or Skype">
+                </div>
+                <div class="links">
+                    <p>No account? <a href="#">Create one!</a></p>
+                    <p><a href="#">Can't access your account?</a></p>
+                </div>
+                <div class="button-container">
+                    <button type="button" class="btn back-button">Back</button>
+                    <button type="submit" class="btn next-button">Next</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="password-view" class="view hidden">
+            <div class="password-header">
+                <div class="logo-container">
+                    <img src="microsoft-logo.png" alt="Microsoft Logo" class="logo-img">
+                    <span class="logo-text">Microsoft</span>
+                </div>
+                <div class="user-identity-container">
+                    <span id="user-email-display"></span>
+                </div>
+                <h1>Enter your password</h1>
+            </div>
+            <form id="password-form">
+                <div class="form-group">
+                    <input type="password" id="password" name="password" placeholder="Password">
+                    <svg class="password-toggle" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path></svg>
+                </div>
+                <div class="links">
+                    <p><a href="#">Forgot your password?</a></p>
+                </div>
+                <div class="button-container">
+                    <button type="submit" class="btn next-button">Next</button>
+                </div>
+            </form>
+            <div class="different-account-link">
+                <a href="#" id="change-account-link">Sign in with a different Microsoft account</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="signin-options animated-content-delayed">
+        <img src="logo-key.png" alt="Microsoft key Logo" class="key-icon">
+        <span>Sign-in options</span>
+    </div>
+</div>
+
+<footer class="footer">
+    <a href="#">Terms of use</a>
+    <a href="#">Privacy & cookies</a>
+    <a href="#">...</a>
+</footer>
+
+<div id="modal-container" class="modal-container">
+    <div class="modal-content">
+        Simulation Complete, credentials harvested!
+    </div>
+</div>
+
+<script>
+    const emailView = document.getElementById('email-view');
+    const passwordView = document.getElementById('password-view');
+    const emailForm = document.getElementById('email-form');
+    const emailInput = document.getElementById('email');
+    const passwordForm = document.getElementById('password-form'); // Get password form
+    const passwordInput = document.getElementById('password');
+    const userEmailDisplay = document.getElementById('user-email-display');
+    const signInOptionsBox = document.querySelector('.signin-options');
+    const changeAccountLink = document.getElementById('change-account-link');
+    const passwordToggle = document.querySelector('.password-toggle');
+    const modalContainer = document.getElementById('modal-container'); // Get modal
+
+    const animationDuration = 400;
+
+    emailForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const emailValue = emailInput.value;
+
+        if (emailValue) {
+            document.body.classList.add('password-view-active');
+            userEmailDisplay.textContent = emailValue;
+            emailView.classList.add('slide-out');
+            signInOptionsBox.classList.add('hidden');
+            signInOptionsBox.classList.remove('animated-content-delayed');
+
+            setTimeout(() => {
+                emailView.classList.add('hidden');
+                emailView.classList.remove('slide-out');
+                passwordView.classList.remove('hidden');
+                passwordView.classList.add('slide-in');
+                passwordInput.focus();
+            }, animationDuration);
+        }
+    });
+
+    changeAccountLink.addEventListener('click', (event) => {
+        event.preventDefault();
+        emailInput.value = ''; // Clear the input field
+        document.body.classList.remove('password-view-active');
+        passwordView.classList.add('slide-out');
+
+        signInOptionsBox.classList.remove('hidden');
+        signInOptionsBox.classList.add('animated-content-delayed');
+
+        setTimeout(() => {
+            passwordView.classList.add('hidden');
+            passwordView.classList.remove('slide-out');
+            emailView.classList.remove('hidden');
+            emailView.classList.add('slide-in');
+            emailInput.focus();
+        }, animationDuration);
+    });
+
+    passwordToggle.addEventListener('click', () => {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+    });
+
+    // ADDED: Event listener for the password form submission
+    passwordForm.addEventListener('submit', (event) => {
+        event.preventDefault(); // Stop the form from submitting
+        modalContainer.classList.add('show'); // Show the modal
+    });
+
+    // ADDED: Event listener to close the modal when clicking on it
+    modalContainer.addEventListener('click', () => {
+        modalContainer.classList.remove('show');
+    });
+</script>
+
+</body>
+</html>
